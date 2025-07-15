@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cookie Example</title></head>
+<body>
+  <input id="userInput" placeholder="Enter name">
+  <button onclick="saveCookie()">Save Cookie</button>
+  <button onclick="showCookie()">Show Cookie</button>
+  <button onclick="deleteCookie()">Delete Cookie</button>
+
+  <script>
+    function saveCookie() {
+      const value = document.getElementById('userInput').value;
+      document.cookie = "username=" + value + "; path=/; max-age=3600"; // Cookie expires in 1 hour
+      document.getElementById('userInput').value = ''; // Clear input field
+      console.log("Cookie saved:", document.cookie);
+      alert("Cookie saved!");
+    }
+
+    function showCookie() {
+      function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  for (let cookie of cookies) {
+    const [key, value] = cookie.split('=');
+    if (key === name) return value;
+  }
+  return null;
+}
+
+console.log(getCookie('username')); // enoir_dev
+
+    }
+
+    function deleteCookie() {
+      document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      alert("Cookie deleted!");
+    }
+  </script>
+</body>
+</html>

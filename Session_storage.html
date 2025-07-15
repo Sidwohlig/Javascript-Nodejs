@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Session Storage Example</title></head>
+<body>
+  <input id="colorInput" placeholder="Enter a color">
+  <button onclick="saveColor()">Save Color</button>
+  <button onclick="showColor()">Show Color</button>
+  <script>
+    function saveColor() {
+      const color = document.getElementById('colorInput').value;
+      sessionStorage.setItem('favoriteColor', color);
+      alert('Color saved for this session!');
+    }
+
+    function showColor() {
+      const color = sessionStorage.getItem('favoriteColor');
+      alert('Favorite Color: ' + (color || 'Nothing saved'));
+    }
+  </script>
+</body>
+</html>

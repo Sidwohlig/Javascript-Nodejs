@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">Upload</button>
+
+    <script>
+        function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0]; // Get the selected file
+
+  const formData = new FormData();
+  formData.append('myFile', file); // 'myFile' is the key name expected by the server
+
+  fetch('https://example.com/upload', {
+    method: 'POST',
+    body: formData // No need to set headers; browser sets them automatically
+  })
+    .then(res => res.json())
+    .then(data => console.log('Upload success:', data))
+    .catch(err => console.error('Upload failed:', err));
+}
+
+    </script>
+    
+    
+        // Example of a fetch request with a different body
+</body>
+</html>

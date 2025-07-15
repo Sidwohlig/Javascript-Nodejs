@@ -1,0 +1,73 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id = "outer" style="background-color: aqua;">
+        Outer DIv 
+        <div id="inner" style="background-color: lightblue;">
+            Inner Div
+        </div>  
+
+    </div>
+    <script>
+                const outer = document.getElementById('outer');
+                const inner = document.getElementById('inner');
+
+                outer.addEventListener('click', () => alert('Outer clicked!')); // bubbling
+                inner.addEventListener('click', () => alert('Inner clicked!'),true); // bubbling
+
+    </script>
+</body>
+</html> -->
+
+<!-- Event Delegation -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Delegation Example</title>
+  <style>
+    ul { list-style: none; padding: 0; }
+    li { padding: 8px; cursor: pointer; border-bottom: 1px solid #ccc; }
+    li:hover { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+  <h2>My Tasks</h2>
+  <ul id="taskList">
+    <li>Learn JavaScript</li>
+    <li>Build a Project</li>
+    <li>Write a Blog Post</li>
+  </ul>
+
+  <button id="addTask">Add New Task</button>
+
+  <script>
+    const taskList = document.getElementById('taskList');
+    const addTaskButton = document.getElementById('addTask');
+
+    // Event Delegation: Listen for clicks on the parent <ul>
+    taskList.addEventListener('click', function(event) {
+      if (event.target.tagName === 'LI') {
+        alert('You clicked on: ' + event.target.textContent);
+        event.target.style.textDecoration = 'line-through'; // Mark as done
+      }
+    });
+
+    // Add new task dynamically
+    addTaskButton.addEventListener('click', function() {
+      const newTask = document.createElement('li');
+      newTask.textContent = 'New Task ' + (taskList.children.length + 1);
+      taskList.appendChild(newTask);
+    });
+  </script>
+
+</body>
+</html>

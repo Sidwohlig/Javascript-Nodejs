@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Browser API Demo</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    button { margin: 10px 0; display: block; }
+  </style>
+</head>
+<body>
+
+  <h1>🚀 Browser API Demo</h1>
+
+  <!-- Clipboard API -->
+  <button id="copyBtn">📋 Copy Text to Clipboard</button>
+  <button id="pasteBtn">📥 Paste from Clipboard</button>
+  <p><strong>Pasted Text:</strong> <span id="pasteOutput">None</span></p>
+
+  <!-- Notification API -->
+  <button id="notifyBtn">🔔 Show Notification</button>
+
+  <!-- History API -->
+  <button id="pushStateBtn">📄 Push New History State</button>
+  <button id="goBackBtn">↩️ Go Back in History</button>
+
+  <!-- Geolocation API -->
+  <button id="geoBtn">🌍 Get My Location</button>
+  <p id="locationOutput">Location: Not available</p>
+
+  <!-- Navigator Info -->
+  <p><strong>Your Browser:</strong> <span id="userAgent"></span></p>
+  <p><strong>Language:</strong> <span id="language"></span></p>
+  <p><strong>Online:</strong> <span id="online"></span></p>
+
+  <script>
+    // Clipboard API - Copy
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText('This was copied from the page!');
+        alert('Text copied to clipboard!');
+      } catch (err) {
+        alert('Failed to copy: ' + err);
+      }
+    });
+
+    // Clipboard API - Paste
+    document.getElementById('pasteBtn').addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('pasteOutput').textContent = text || 'Clipboard is empty';
+      } catch (err) {
+        alert('Failed to read clipboard: ' + err);
+      }
+    });
+
+    // Notification API
+    document.getElementById('notifyBtn').addEventListener('click', () => {
+      if (Notification.permission === 'granted') {
+        new Notification('📣 Hello from Browser API Demo!');
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification('✅ Permission granted! Here is your notification.');
+          }
+        });
+      } else {
+        alert('Notifications are blocked.');
+      }
+    });
+
+    // History API
+    document.getElementById('pushStateBtn').addEventListener('click', () => {
+      history.pushState({}, '', '/demo-page');
+      alert('URL changed to /demo-page (no reload)');
+    });
+
+    document.getElementById('goBackBtn').addEventListener('click', () => {
+      history.back(); // Go back in browser history
+    });
+
+    // Geolocation API
+    document.getElementById('geoBtn').addEventListener('click', () => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const { latitude, longitude } = position.coords;
+            document.getElementById('locationOutput').textContent = `Lat: ${latitude}, Lon: ${longitude}`;
+          },
+          error => {
+            document.getElementById('locationOutput').textContent = 'Error: ' + error.message;
+          }
+        );
+      } else {
+        alert('Geolocation not supported.');
+      }
+    });
+
+    // Navigator Info
+    document.getElementById('userAgent').textContent = navigator.userAgent;
+    document.getElementById('language').textContent = navigator.language;
+    document.getElementById('online').textContent = navigator.onLine ? 'Yes' : 'No';
+  </script>
+
+</body>
+</html>

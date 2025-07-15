@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1 id="title">Welcome</h1>
+    <button id="changeBtn">Change Title</button>
+    <button id="myBtn1">Click me</button>
+
+</script>
+
+    <script>
+      const title = document.getElementById('title');
+      const btn = document.getElementById('changeBtn');
+
+      btn.addEventListener('click', () => {
+        title.textContent = 'Title Changed! 🎉';
+        title.style.color = 'crimson';
+      });
+
+    const btn1 = document.getElementById('myBtn1');
+     btn1.addEventListener('click', (event) => {
+     console.log('Button clicked!', event);
+  });
+    </script>
+  </body>
+</html>
