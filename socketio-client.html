@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Chat Client</title>
+    <script src="/socket.io/socket.io.js"></script> <style>
+        body { font-family: sans-serif; margin: 20px; display: flex; }
+        #chat-container { flex: 2; border: 1px solid #ccc; padding: 10px; height: 450px; display: flex; flex-direction: column; }
+        #messages { flex-grow: 1; overflow-y: scroll; margin-bottom: 10px; padding: 5px; }
+        .message-input-area { display: flex; }
+        input[type="text"] { flex-grow: 1; padding: 8px; margin-right: 5px; }
+        button { padding: 8px 15px; }
+        #users-online { flex: 1; margin-left: 20px; border: 1px solid #eee; padding: 10px; height: 450px; overflow-y: auto; }
+        #users-online h3 { margin-top: 0; }
+        #user-list li { cursor: pointer; padding: 3px; }
+        #user-list li:hover { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>Socket.IO Chat</h1>
+        <div id="messages"></div>
+        <div class="message-input-area">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button id="sendButton">Send</button>
+        </div>
+        <p>Your Username: <span id="myUsername"></span></p>
+    </div>
+    <div id="users-online">
+        <h3>Users Online:</h3>
+        <ul id="user-list"></ul>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const myUsernameSpan = document.getElementById('myUsername');
+        const userList = document.getElementById('user-list');
+
+        // Connect to the Socket.IO server
+        const socket = io('http://localhost:3000'); // Connects to the same host/port as the HTML
+
+        let username = '';
+
+        // Prompt for username when connected
+        socket.on('connect', () => {
+            console.log('Connected to Socket.IO server.');
+            while (!username) {
+                username = prompt('Please enter your username:');
+                if (username === null) { // User cancelled
+                    username = 'Guest_' + Math.random().toString(36).substring(7);
+                    break;
+                }
+                username = username.trim();
+            }
+            myUsernameSpan.textContent = username;
+            socket.emit('join', username); // Send join event to server
+        });
+
+        // Listen for chat messages
+        socket.on('chat message', (msg) => {
+            const p = document.createElement('p');
+            p.textContent = `${msg.user}: ${msg.text}`;
+            messagesDiv.appendChild(p);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+
+        // Listen for user list updates
+        socket.on('user list', (users) => {
+            userList.innerHTML = ''; // Clear current list
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = user;
+                // You could add logic here for private messaging later
+                userList.appendChild(li);
+            });
+        });
+
+        // Handle disconnection
+        socket.on('disconnect', () => {
+            messagesDiv.innerHTML += '<p><em>Disconnected from server. Attempting to reconnect...</em></p>';
+            console.log('Disconnected from Socket.IO server.');
+        });
+
+        // Handle errors
+        socket.on('connect_error', (err) => {
+            console.error('Socket.IO connection error:', err.message);
+            messagesDiv.innerHTML += `<p style="color: red;"><em>Connection error: ${err.message}</em></p>`;
+        });
+
+        sendButton.onclick = () => {
+            sendMessage();
+        };
+
+        messageInput.onkeyup = (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        };
+
+        function sendMessage() {
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                socket.emit('chat message', message); // Emit 'chat message' event
+                messageInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
