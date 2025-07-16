@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            padding: 8px;
+            margin: 10px 0;
+            width: 200px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #movie-list {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Movie Management System</h1>
+
+    <!-- Form to Add a Movie -->
+    <h3>Add a New Movie</h3>
+    <form id="movieForm">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="year">Year:</label><br>
+        <input type="number" id="year" name="year" required><br>
+
+        <label for="genre">Genre:</label><br>
+        <input type="text" id="genre" name="genre" required><br>
+
+        <label for="rating">Rating (0-10):</label><br>
+        <input type="number" id="rating" name="rating" min="0" max="10" required><br>
+
+        <button type="submit">Add Movie</button>
+    </form>
+
+    <!-- Button to View All Movies -->
+    <button onclick="window.location.href='/movies'">View All Movies</button>
+
+    <script>
+        // Function to handle movie form submission
+        document.getElementById('movieForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const year = document.getElementById('year').value;
+            const genre = document.getElementById('genre').value;
+            const rating = document.getElementById('rating').value;
+
+            const newMovie = { title, year, genre, rating: parseInt(rating) };
+
+            try {
+                const response = await fetch('/add-movie', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newMovie)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('Movie added successfully!');
+                    document.getElementById('movieForm').reset();  // Clear the form
+                } else {
+                    alert('Error: ' + result.message);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add movie');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
